@@ -1,3 +1,3 @@
 # ChessCli
 
-A Chess Client in Java Written for fun and practice.
+A Chess Client Written in Java for fun and practice.
