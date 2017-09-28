@@ -1,7 +1,7 @@
 package ChessCli;
 /*
  * Bugs:
- *   Fix en passant
+ *   -
  * 
  * To Implement:
  *   undoMove
@@ -13,7 +13,7 @@ package ChessCli;
  *   load matches from EPD files
  *   
  * Test:
- *    test castling rules
+ *    -
  * */
 
 import java.awt.EventQueue;
