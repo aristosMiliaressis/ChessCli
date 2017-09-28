@@ -51,7 +51,7 @@ public final class Move {
 		}
 		
 		private boolean checkEnPassant(Descriptor descriptor) {
-		    System.out.println("\t [*] Move is En Passant");
+		    System.out.println("\t[*] Move is En Passant");
 		    Board.Coords srcCoords = descriptor.getSrcCoords();
 		    Board.Coords destCoords = descriptor.getDestCoords();
             
@@ -59,15 +59,11 @@ public final class Move {
             Descriptor prevMoveDesc = prevMove.new Descriptor(Match.getPrevMove());
             Board.Coords prevDestCoords = prevMoveDesc.getDestCoords();
             Board.Coords prevSrcCoords = prevMoveDesc.getSrcCoords();
-            System.out.println("Move Src: " + srcCoords.Notation());
-            System.out.println("Move Dest: " + destCoords.Notation());
-            System.out.println("Prev Move Src: " + prevSrcCoords.Notation());
-            System.out.println("Prev Move Dest: " + prevDestCoords.Notation());
             
             if (prevDestCoords.rank == srcCoords.rank && prevDestCoords.file == destCoords.file && prevSrcCoords.rank != destCoords.rank) {
                 Piece piece = Board.getPieceAtSquare(prevDestCoords);
                 if (piece != null && piece.getColor() != descriptor.playingColor() && piece.getType() == Piece.Type.PAWN) {
-                    System.out.println("Passed En Passant initial test");
+                    System.out.println("\t[+] Passed En Passant initial test");
                     return !checkKingPinned(descriptor);
                 }
             }
