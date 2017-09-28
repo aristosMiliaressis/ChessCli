@@ -201,7 +201,7 @@ public class BoardView extends JPanel implements MouseListener {
     
     public static void pushMove(String notation) {
         if (Match.getCurrentPlayer() == Piece.Color.WHITE) {
-            notation =  match.getMoveCount() + ". " + notation;
+            notation = (match.getMoveCount() / 2 + 1) + ". " + notation;
         } else {
             notation = model.remove(model.size()-1) + "    " + notation;
         }
@@ -212,3 +212,4 @@ public class BoardView extends JPanel implements MouseListener {
         return null; // TODO
     }
 }
+
