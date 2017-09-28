@@ -59,6 +59,11 @@ public final class Move {
             Descriptor prevMoveDesc = prevMove.new Descriptor(Match.getPrevMove());
             Board.Coords prevDestCoords = prevMoveDesc.getDestCoords();
             Board.Coords prevSrcCoords = prevMoveDesc.getSrcCoords();
+            System.out.println("Move Src: " + srcCoords.Notation());
+            System.out.println("Move Dest: " + destCoords.Notation());
+            System.out.println("Prev Move Src: " + prevSrcCoords.Notation());
+            System.out.println("Prev Move Dest: " + prevDestCoords.Notation());
+            
             if (prevDestCoords.rank == srcCoords.rank && prevDestCoords.file == destCoords.file && prevSrcCoords.rank != destCoords.rank) {
                 Piece piece = Board.getPieceAtSquare(prevDestCoords);
                 if (piece != null && piece.getColor() != descriptor.playingColor() && piece.getType() == Piece.Type.PAWN) {
@@ -147,7 +152,7 @@ public final class Move {
             }
             while (!dest.equals(src));
 		    
-            return true;
+            return !src.isPinned(descriptor.playingColor());
 		}
 		
 		private boolean checkDestinationSquare(Descriptor descriptor) {
@@ -268,6 +273,7 @@ public final class Move {
         }
 		
 		public Descriptor(int value) {
+		    System.out.println("Descriptor(" + Integer.toBinaryString(value) + ")");
 		    this.value = value;
         }
 		
@@ -685,3 +691,4 @@ public final class Move {
 		return notation;
 	}
 }
+
