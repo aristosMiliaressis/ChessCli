@@ -72,7 +72,7 @@ public final class Move {
         }
 		
 		private boolean checkCastling(Descriptor descriptor) {
-		    System.out.println("\t [*] Move is Castling");
+		    System.out.println("\t[*] Move is Castling");
 		    Board.Coords srcCoords = descriptor.getSrcCoords();
             Board.Coords destCoords = descriptor.getDestCoords();
             Board.Coords rockCoords = null;
@@ -93,11 +93,12 @@ public final class Move {
                 return false;
             }
             
+            System.out.println("\t[+] Passed Castling initial test");
             return true;
         }
 		
 		private boolean checkPathForPieces(Board.Coords src, Board.Coords dest) {
-            System.out.println("\t [*] Move is NOT Knights");
+            System.out.println("\t[*] Move is NOT Knights");
             do {
                 if (src.rank > dest.rank) {
                     src.rank--;
@@ -116,12 +117,12 @@ public final class Move {
                 }
 
                 if (Board.getPieceAtSquare(src) != null) {
-                    System.out.println("\t[-] Piece[" + src.file + src.rank + "] at Square: " + src.file + src.rank);
                     return false;
                 }
             }
             while (!dest.equals(src));
             
+            System.out.println("\t[+] No Pieces in Path");
             return true;
         }
 		
@@ -183,7 +184,6 @@ public final class Move {
 
                 switch (destPiece.getType()) {
                 case PAWN:
-                    System.out.println("\t [+] Captures Pawn");
                     descriptor.captures(Piece.Type.PAWN);
                     break;
                 case ROCK:
@@ -269,7 +269,6 @@ public final class Move {
         }
 		
 		public Descriptor(int value) {
-		    System.out.println("Descriptor(" + Integer.toBinaryString(value) + ")");
 		    this.value = value;
         }
 		
