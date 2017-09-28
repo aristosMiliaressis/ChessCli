@@ -45,7 +45,7 @@ public class Match {
 		private String remainingTime;
 		private static Piece.Color playingColor = Piece.Color.WHITE;
 		private static ArrayList<Integer> playedMoves = new ArrayList<Integer>();
-		private int moveCount = 1;
+		private int moveCount;
 		
 		// used to look up if castling is allowed
         // based on whether the king or a rock
@@ -74,7 +74,7 @@ public class Match {
 	
 	
 	Match() {
-		state.round = 0;
+		state.moveCount = 0;
 	}
 
 	public static Piece.Color getCurrentPlayer() {
@@ -86,7 +86,7 @@ public class Match {
 	}
 	
 	public static int getPrevMove() {
-		return (state.round > 0) ? State.playedMoves.get(state.round -1) : -1;
+		return (state.moveCount > 0) ? State.playedMoves.get(state.moveCount -1) : -1;
 	}
 	
 	protected int getMoveCount() {
@@ -195,13 +195,9 @@ public class Match {
 		Board.makeMove(State.playingColor, descriptor);
 		BoardView.pushMove(move.getNotation());
 		
-		if (State.playingColor == Piece.Color.WHITE) {
-		    State.playingColor = Piece.Color.BLACK;
-		    state.moveCount++;
-		} else {
-		    State.playingColor = Piece.Color.WHITE;
-		}
+		State.playingColor = (State.playingColor == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
 
+		state.moveCount++;
 		State.playedMoves.add(descriptor.getValue());
 		BoardView.setSelectedPiece(null);
 		Board.deselectAll();
@@ -226,14 +222,9 @@ public class Match {
 		}
 		
 		Board.unmakeMove(descriptor);
-		if (State.playingColor == Piece.Color.WHITE) {
-            State.playingColor = Piece.Color.BLACK;
-            state.moveCount++;
-        } else {
-            State.playingColor = Piece.Color.WHITE;
-        }
+		State.playingColor = (State.playingColor == Piece.Color.WHITE) ? Piece.Color.BLACK : Piece.Color.WHITE;
 		
-
+		state.moveCount++;
 		State.playedMoves.remove(State.playedMoves.size() - 1);
 	}
 
