@@ -40,8 +40,12 @@ public final class Move {
 			   }
 			}
 			
+			if (!checkDestSquareCondition(descriptor)) {
+			    return false;
+			}
+			
 			move.setDescriptor(descriptor);
-			return checkDestSquareCondition(descriptor) && !isKingPinned(descriptor);
+			return !isKingPinned(descriptor);
 		}
 		
 		private boolean checkEnPassant(Descriptor descriptor) {
@@ -592,7 +596,7 @@ public final class Move {
 	private static String generateNotation(Descriptor descriptor) { // TODO: test
 		String notation = "";
 
-		Board.Coords srcCoords  = descriptor.getSrcCoords ();
+		Board.Coords srcCoords  = descriptor.getSrcCoords();
 		Board.Coords destCoords = descriptor.getDestCoords();
 
 		if (descriptor.en_passant()) {
@@ -603,60 +607,26 @@ public final class Move {
 			} else {
 				notation = "O-O-O";
 			}
-		} else if (descriptor.promotes()) {
-			if (descriptor.captures()) {
-				notation = srcCoords.file + "x";
-			}
-			notation += Board.Coords.Notation(destCoords) + "=";
-
-			Piece.Type promoType = descriptor.promotionType();
-			switch (promoType) {
-			case QUEEN:
-				notation += "Q";
-				break;
-			case KNIGHT:
-				notation += "N";
-				break;
-			case BISHOP:
-				notation += "B";
-				break;
-			case ROCK:
-				notation += "R";
-				break;
-			}
 		} else {
-			Piece.Type pieceType = Board.getPieceAtSquare(srcCoords).getType();
-			if (pieceType != null) {
-				switch (pieceType) {
-				case PAWN:
-					if (descriptor.captures()) {
-						notation = "" + srcCoords.file;
-					}
-					break;
-				case BISHOP:
-					notation = "B";
-					break;
-				case KNIGHT:
-					notation = "N";
-					break;
-				case ROCK:
-					notation = "R";
-					break;
-				case QUEEN:
-					notation = "Q";
-					break;
-				case KING:
-					notation = "K";
-					break;
-				}
-			}
+		    Piece.Type pieceType = Board.getPieceAtSquare(srcCoords).getType();
+		    notation = pieceType.toString();
+		    if (pieceType == Piece.Type.PAWN) {
+                notation = "";
+            }
 
-			if (descriptor.captures()) {
-				notation += "x";
-			}
-			notation += Board.Coords.Notation(destCoords);
+		    if (descriptor.captures()) {
+		        if (pieceType == Piece.Type.PAWN) {
+		            notation = "" + srcCoords.file;
+		        }
+		        notation += "x";
+		    }
+		    notation += destCoords.Notation();
+		
+		    if (descriptor.promotes()) {
+		        notation += "=" + descriptor.promotionType().toString();
+		    }
 		}
-
+		
 		return notation;
 	}
 }
