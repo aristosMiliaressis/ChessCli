@@ -14,40 +14,34 @@ public final class Move {
 
 		Rules() {
 			jumps = false;
-			destState = null;
+			destCondition = null;
 			en_passant = false;
 			castling = false;
-			srcRank = -1;
 		}
 
 		Rules(Rules rules) {
 			this.jumps = rules.jumps;
-			this.destState = rules.destState;
+			this.destCondition = rules.destCondition;
 			this.en_passant = rules.en_passant;
 			this.castling = rules.castling;
-			this.srcRank = rules.srcRank;
 		}
 
 		public boolean check(Move move) {
 			Descriptor descriptor = move.getDescriptor();
-			System.out.println("Checking Move: " + descriptor.getDestCoords().Notation());
+			System.out.println("Checking Move: " + move.getNotation());
 			
 			if (en_passant) {
 			    return checkEnPassant(descriptor);
 			} else if (castling) {
 			    return checkCastling(descriptor);
 			} else if (!jumps) {
-			   if (!checkPathForPieces(descriptor.getSrcCoords(), descriptor.getDestCoords())) {
+			   if (arePiecesInPath(descriptor.getSrcCoords(), descriptor.getDestCoords())) {
 			       return false;
 			   }
 			}
 			
-			if (!checkDestinationSquare(descriptor) || !checkSourceSquare(descriptor)) {
-			    return false;
-			}
-
 			move.setDescriptor(descriptor);
-			return !checkKingPinned(descriptor);
+			return checkDestSquareCondition(descriptor) && !isKingPinned(descriptor);
 		}
 		
 		private boolean checkEnPassant(Descriptor descriptor) {
@@ -60,18 +54,21 @@ public final class Move {
             Board.Coords prevDestCoords = prevMoveDesc.getDestCoords();
             Board.Coords prevSrcCoords = prevMoveDesc.getSrcCoords();
             
-            if (prevDestCoords.rank == srcCoords.rank && prevDestCoords.file == destCoords.file && prevSrcCoords.rank != destCoords.rank) {
+            if (prevDestCoords.rank == srcCoords.rank  && 
+                prevDestCoords.file == destCoords.file && 
+                prevSrcCoords.rank != destCoords.rank) {
+                
                 Piece piece = Board.getPieceAtSquare(prevDestCoords);
-                if (piece != null && piece.getColor() != descriptor.playingColor() && piece.getType() == Piece.Type.PAWN) {
+                if (piece.getType() == Piece.Type.PAWN) {
                     System.out.println("\t[+] Passed En Passant initial test");
-                    return !checkKingPinned(descriptor);
+                    return !isKingPinned(descriptor);
                 }
             }
 
             return false;
         }
 		
-		private boolean checkCastling(Descriptor descriptor) {
+		private boolean checkCastling(Descriptor descriptor) { // TODO
 		    System.out.println("\t[*] Move is Castling");
 		    Board.Coords srcCoords = descriptor.getSrcCoords();
             Board.Coords destCoords = descriptor.getDestCoords();
@@ -89,15 +86,38 @@ public final class Move {
                 return false;
             }
             
-            if (!checkIfPathPinned(descriptor) || !checkPathForPieces(srcCoords, rockCoords)) {
-                return false;
-            }
-            
-            System.out.println("\t[+] Passed Castling initial test");
-            return true;
+            return !arePiecesInPath(srcCoords, rockCoords) && !isPathPinned(descriptor);
         }
 		
-		private boolean checkPathForPieces(Board.Coords src, Board.Coords dest) {
+		private boolean isPathPinned(Descriptor descriptor) {
+		    System.out.println("\t[*] Checking if Path is Pinned");
+            Board.Coords src = descriptor.getSrcCoords();
+            Board.Coords dest = descriptor.getDestCoords();
+            
+            do {
+                if (Board.getSquare(src).isPinned(descriptor.playingColor())) {
+                    System.out.println("\t[-] Path is Pinned");
+                    return true;
+                }
+                
+                if (src.rank > dest.rank) {
+                    src.rank--;
+                } else if (src.rank < dest.rank) {
+                    src.rank++;
+                }
+
+                if (src.file > dest.file) {
+                    src.file--;
+                } else if (src.file < dest.file) {
+                    src.file++;
+                }
+            }
+            while (!dest.equals(src));
+            
+            return Board.getSquare(src).isPinned(descriptor.playingColor());
+        }
+		
+		private boolean arePiecesInPath(Board.Coords src, Board.Coords dest) {
             System.out.println("\t[*] Move is NOT Knights");
             do {
                 if (src.rank > dest.rank) {
@@ -117,44 +137,20 @@ public final class Move {
                 }
 
                 if (Board.getPieceAtSquare(src) != null) {
-                    return false;
+                    return true;
                 }
             }
             while (!dest.equals(src));
             
             System.out.println("\t[+] No Pieces in Path");
-            return true;
+            return false;
         }
 		
-		private boolean checkIfPathPinned(Descriptor descriptor) {
-		    Board.Coords src = descriptor.getSrcCoords();
-            Board.Coords dest = descriptor.getDestCoords();
-            
-		    do {
-		        if (src.isPinned(descriptor.playingColor())) {
-                    return false;
-                }
-		        
-                if (src.rank > dest.rank) {
-                    src.rank--;
-                } else if (src.rank < dest.rank) {
-                    src.rank++;
-                }
-
-                if (src.file > dest.file) {
-                    src.file--;
-                } else if (src.file < dest.file) {
-                    src.file++;
-                }
-            }
-            while (!dest.equals(src));
+		private boolean checkDestSquareCondition(Descriptor descriptor) {
+		    System.out.println("\t[*] Checking Destination Square Condition");
+		    Board.Coords destCoords  = descriptor.getDestCoords();
 		    
-            return !src.isPinned(descriptor.playingColor());
-		}
-		
-		private boolean checkDestinationSquare(Descriptor descriptor) {
 		    if (descriptor.promotes()) {
-		        Board.Coords destCoords  = descriptor.getDestCoords();
 		        Piece.Color playingColor = descriptor.playingColor();
 		        if (playingColor == Piece.Color.WHITE && destCoords.rank != 8 ||
 		            playingColor == Piece.Color.BLACK && destCoords.rank != 1) {
@@ -162,23 +158,24 @@ public final class Move {
 		        }
 		    }
 		    
-		    Piece destPiece = Board.getPieceAtSquare(descriptor.getDestCoords());
+		    Piece destPiece = Board.getPieceAtSquare(destCoords);
             if (destPiece == null) {
-                System.out.println("\t [*] No Piece at Dest");
-                if (destState == SquareState.OPPOSING_PIECE) {
+                System.out.println("\t[*] No Piece at Dest " + destCoords.Notation());
+                if (destCondition == SquareState.OPPOSING_PIECE) {
                     return false;
                 }
 
                 descriptor.captures(null);
             } else {
-                System.out.println("\t [*] Piece Found at Dest");
+                System.out.println("\t[*] Piece Found at Dest");
                 if (destPiece.getColor() == Match.getCurrentPlayer()) {
-                    System.out.println("\t [-] Ally Piece at Dest");
+                    System.out.println("\t[-] Ally Piece at Dest");
                     return false;
                 }
 
-                System.out.println("\t [*] Opposing Piece at Dest");
-                if (destState == SquareState.NO_PIECE) {
+                System.out.println("\t[*] Opposing Piece at Dest");
+                if (destCondition == SquareState.NO_PIECE) {
+                    System.out.println("\t[-] Dest Square Test Failed");
                     return false;
                 }
 
@@ -204,27 +201,16 @@ public final class Move {
                 }
             }
             
-            System.out.println("\t [+] Dest Square Test Passed");
+            System.out.println("\t[+] Dest Square Test Passed");
             return true;
 		}
 		
-		private boolean checkSourceSquare(Descriptor descriptor) {
-		    if (srcRank != -1) {
-		        System.out.println("\t [*] Source Rank Rule");
-                if (srcRank != descriptor.getSrcCoords().rank) {
-                    return false;
-                }
-                System.out.println("\t [+] Passed Source Rank Rule");
-            }
-		    
-		    return true;
-		}
-		
-		private boolean checkKingPinned(Descriptor descriptor) {
+		private boolean isKingPinned(Descriptor descriptor) {
+		    System.out.println("\t[*] Checking if King is Pinned");
             Board.makeMove(descriptor.playingColor(), descriptor);
             
-            Board.Coords kingCoords = Board.findKing(descriptor.playingColor());
-            boolean isKingPinned = kingCoords.isPinned(descriptor.playingColor());
+            Board.Square kingSquare = Board.findKing(descriptor.playingColor());
+            boolean isKingPinned = kingSquare.isPinned(descriptor.playingColor());
             
             Board.unmakeMove(descriptor);
             
@@ -233,10 +219,9 @@ public final class Move {
 		}
 
 		public boolean jumps;
-		public SquareState destState;
+		public SquareState destCondition;
 		public boolean en_passant;
 		public boolean castling;
-		public int srcRank;
 	};
 
 	public class Descriptor {
@@ -487,11 +472,6 @@ public final class Move {
 		descriptor = new Descriptor(descriptor);
 		notation = generateNotation(descriptor);
 	}
-
-	public Move(String notation) {
-		this.notation = notation;
-		//descriptor = new Move.Descriptor(notation);
-	}
 	
 	protected HashMap<Integer, Move> expandUndefinedMoves() {
         HashMap<Integer, Move> expandedMoves = new HashMap<Integer, Move>();
@@ -595,11 +575,6 @@ public final class Move {
 		return rules;
 	}
 
-	protected void setNotation(String notation) {
-		//descriptor = generateDescriptor(notation);
-		this.notation = notation;
-	}
-
 	public String getNotation() {
 		return notation;
 	}
@@ -614,7 +589,7 @@ public final class Move {
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private static String generateNotation(Descriptor descriptor) { // FIXME: fix & test
+	private static String generateNotation(Descriptor descriptor) { // TODO: test
 		String notation = "";
 
 		Board.Coords srcCoords  = descriptor.getSrcCoords ();
@@ -623,7 +598,7 @@ public final class Move {
 		if (descriptor.en_passant()) {
 			notation = srcCoords.file + "x" + Board.Coords.Notation(destCoords) + "e.p.";
 		} else if (descriptor.castling()) {
-			if (destCoords.file == 'G') {
+			if (destCoords.file == 'g') {
 				notation = "O-O";
 			} else {
 				notation = "O-O-O";
@@ -682,7 +657,6 @@ public final class Move {
 			notation += Board.Coords.Notation(destCoords);
 		}
 
-		System.out.println("Move Notation: " + notation);
 		return notation;
 	}
 }

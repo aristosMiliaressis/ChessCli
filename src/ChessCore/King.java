@@ -20,146 +20,152 @@ public class King extends Piece {
 	}
 
 	public HashMap<Integer, Move> calculateLegalMoves() {
-        System.out.println(getColor().toString() + this + " at " + getCoords().Notation() + " called calculateLegalMoves()");
 		HashMap<Integer, Move> legalMoves = new HashMap<Integer, Move>();
-
+		Board.Coords coords = this.getCoords();
+		Color color = this.getColor();
+		
+		Move.Rules rules;
+		Move.Descriptor descriptor;
+		Board.Coords destCoords;
+		Board.Coords srcCoords;
+		
 		Move up = new Move();
-		Move.Rules rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules = new Move.Rules();
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		up.setRules(rules);
 
-		Move.Descriptor descriptor = up.new Descriptor();
-		Board.Coords tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.rank++;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor = up.new Descriptor();
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.rank++;
+		descriptor.setDestCoords(destCoords);
 		up.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(up)) {
-			legalMoves.put(tmpCoords.keyable(), up);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), up);
 		}
 
 
 		Move up_left = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		up_left.setRules(rules);
 
 		descriptor = up_left.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.rank++;
-		tmpCoords.file--;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.rank++;
+		destCoords.file--;
+		descriptor.setDestCoords(destCoords);
 		up_left.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(up_left)) {
-			legalMoves.put(tmpCoords.keyable(), up_left);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), up_left);
 		}
 
 
 		Move up_rigth = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		up_rigth.setRules(rules);
 
 		descriptor = up_rigth.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.file++;
-		tmpCoords.rank++;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.file++;
+		destCoords.rank++;
+		descriptor.setDestCoords(destCoords);
 		up_rigth.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(up_rigth)) {
-			legalMoves.put(tmpCoords.keyable(), up_rigth);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), up_rigth);
 		}
 
 
 		Move left = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		left.setRules(rules);
 
 		descriptor = left.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.file--;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.file--;
+		descriptor.setDestCoords(destCoords);
 		left.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(left)) {
-			legalMoves.put(tmpCoords.keyable(), left);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), left);
 		}
 
 
 		Move rigth = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		rigth.setRules(rules);
 
 		descriptor = rigth.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.file++;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.file++;
+		descriptor.setDestCoords(destCoords);
 		rigth.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(rigth)) {
-			legalMoves.put(tmpCoords.keyable(), rigth);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), rigth);
 		}
 
 
 		Move down = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		down.setRules(rules);
 
 		descriptor = down.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.rank--;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.rank--;
+		descriptor.setDestCoords(destCoords);
 		down.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(down)) {
-			legalMoves.put(tmpCoords.keyable(), down);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), down);
 		}
 
 
 		Move down_left = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		down_left.setRules(rules);
 
 		descriptor = down_left.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.rank--;
-		tmpCoords.file--;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.rank--;
+		destCoords.file--;
+		descriptor.setDestCoords(destCoords);
 		down_left.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(down_left)) {
-			legalMoves.put(tmpCoords.keyable(), down_left);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), down_left);
 		}
 
 
 		Move down_rigth = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		down_rigth.setRules(rules);
 
 		descriptor = down_rigth.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.rank--;
-		tmpCoords.file++;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(coords);
+        destCoords = new Board.Coords(coords);
+		destCoords.rank--;
+		destCoords.file++;
+		descriptor.setDestCoords(destCoords);
 		down_rigth.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(down_rigth)) {
-			legalMoves.put(tmpCoords.keyable(), down_rigth);
+		if (destCoords.valid()) {
+			legalMoves.put(destCoords.keyable(), down_rigth);
 		}
 		
 		
@@ -168,16 +174,18 @@ public class King extends Piece {
 		rules.castling = true;
 		queen_castling.setRules(rules);
 
+		srcCoords = new Board.Coords('e', color == Color.WHITE ? 1 : 8);
+        destCoords = new Board.Coords(coords);
+        destCoords.file = 'c';
+        destCoords.rank = srcCoords.rank;
 		descriptor = queen_castling.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.file -= 2;
-		descriptor.setDestCoords(tmpCoords);
-		descriptor.castling(true);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(srcCoords);
+        descriptor.setDestCoords(destCoords);
+        descriptor.castling(true);
 		queen_castling.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(queen_castling)) {
-			legalMoves.put(tmpCoords.keyable(), queen_castling);
+		if (destCoords.valid() && coords.equals(srcCoords)) {
+			legalMoves.put(destCoords.keyable(), queen_castling);
 		}
 
 
@@ -186,16 +194,17 @@ public class King extends Piece {
 		rules.castling = true;
 		king_castling.setRules(rules);
 
+		destCoords = new Board.Coords(coords);
+		destCoords.file = 'g';
+		destCoords.rank = srcCoords.rank;
 		descriptor = king_castling.new Descriptor();
-		tmpCoords = new Board.Coords(getCoords());
-		descriptor.playingColor(getColor());
-        descriptor.setSrcCoords(getCoords());
-		tmpCoords.file += 2;
-		descriptor.setDestCoords(tmpCoords);
+		descriptor.playingColor(color);
+        descriptor.setSrcCoords(srcCoords);
+		descriptor.setDestCoords(destCoords);
 		descriptor.castling(true);
 		king_castling.setDescriptor(descriptor);
-		if (tmpCoords.valid() && rules.check(king_castling)) {
-			legalMoves.put(tmpCoords.keyable(), king_castling);
+		if (destCoords.valid() && coords.equals(srcCoords)) {
+			legalMoves.put(destCoords.keyable(), king_castling);
 		}
 
 		return legalMoves;

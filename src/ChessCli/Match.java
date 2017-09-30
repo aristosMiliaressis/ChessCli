@@ -110,12 +110,15 @@ public class Match {
 	}
 
 	private void pieceSelected(Board.Coords srcCoords) {
+	    HashMap<Integer, Move> legalMoves;
+	    ArrayList<Integer> removedMoves = new ArrayList<Integer>();
+	    
 	    System.out.println("Match::pieceSelected(" + srcCoords.file + srcCoords.rank);
 		Piece piece = Board.getPieceAtSquare(srcCoords);
 		if (piece == null || piece.getColor() != State.playingColor) {
 			return;
 		}
-
+		
 		Board.deselectAll();
 		BoardView.setSelectedPiece(null);
 		
@@ -123,36 +126,47 @@ public class Match {
 		Board.selectSquare(srcCoords, Board.Square.SelectionType.SELECTED_PIECE);
 
 		// Calculate Pieces Moves
-		HashMap<Integer, Move> legalMoves = piece.calculateLegalMoves();
+		legalMoves = piece.calculateLegalMoves();
 
-	    // Select Destination Squares in Legal Moves
+		// Select Destination Squares in Legal Moves
 	    Iterator<Entry<Integer, Move>> it = legalMoves.entrySet().iterator();
 	    while (it.hasNext()) {
 	    	Entry<Integer, Move> entry = (Entry<Integer, Move>) it.next();
-	    	Board.Square destSquare = Board.getSquare(new Board.Coords(entry.getKey()));
-	    	Move.Descriptor descriptor = entry.getValue().getDescriptor();
-	    	descriptor.setSrcCoords(srcCoords);
+	    	Move move = entry.getValue();
+	    	Move.Descriptor descriptor = move.getDescriptor();
+	    	Move.Rules rules = move.getRules();
 	    	
 	    	// Check for castling state (has king or rock moved?)
-	    	if (descriptor.castling() && !state.checkCastlingRights(descriptor)) {
-	    		System.out.println("WTF");
-				legalMoves.remove(entry.getKey());
-				continue;
-			}
+            if (descriptor.castling() && !state.checkCastlingRights(descriptor)) {
+                System.out.println("\t[-] No Castling Rigths");
+                removedMoves.add(entry.getKey());
+                continue;
+            }
+            
+	    	if (!rules.check(move)) {
+	    	    System.out.println("\t[-] Failed rule check");
+	    	    removedMoves.add(entry.getKey());
+                continue;
+	    	}
 	    	
-			if (destSquare != null) {
-				if (descriptor.captures()) {
-					destSquare.select(Board.Square.SelectionType.CAPTURE);
-				} else {
-					destSquare.select(Board.Square.SelectionType.LEGAL_MOVE);
-				}
+	    	Board.Square destSquare = Board.getSquare(new Board.Coords(entry.getKey()));
+			if (descriptor.captures()) {
+				destSquare.select(Board.Square.SelectionType.CAPTURE);
 			} else {
-				it.remove();
+				destSquare.select(Board.Square.SelectionType.LEGAL_MOVE);
 			}
 	    }
 	    
 	    System.out.println("--------------------------");
-	    System.out.println("Legal Moves: " + legalMoves.size() + "\n");
+	    System.out.println("Initial Moves: " + legalMoves.size() + "\n");
+	    System.out.println("Removed Moves: " + removedMoves.size() + "\n");
+	    
+	    Iterator<Integer> it2 = removedMoves.iterator();
+	    while (it2.hasNext()) {
+	        legalMoves.remove(it2.next());
+	    }
+	    
+	    System.out.println("Legal Moves: " + legalMoves.size() + "\n");	    
 	    
 	    this.legalMoves = legalMoves;
 	    BoardView.setSelectedPiece(Board.getPieceAtSquare(srcCoords));
@@ -257,8 +271,8 @@ public class Match {
 	        }
 	    }
 	    
-	    Board.Coords kingCoords = Board.findKing(State.playingColor);
-	    if (kingCoords.isPinned(State.playingColor)) {
+	    Board.Square kingSquare = Board.findKing(State.playingColor);
+	    if (kingSquare.isPinned(State.playingColor)) {
 	        return Result.CHECKMATE;
 	    } else {
 	        return Result.STALEMATE;

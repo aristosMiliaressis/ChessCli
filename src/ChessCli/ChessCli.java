@@ -3,6 +3,9 @@ package ChessCli;
  * Bugs:
  *   -
  * 
+ * Refactor:
+ *   -
+ *      
  * To Implement:
  *   undoMove
  *   
@@ -16,7 +19,9 @@ package ChessCli;
  *    -
  * */
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -35,7 +40,6 @@ public class ChessCli extends JFrame implements ActionListener {
             public void run() {
                 try {
                     ChessCli window = new ChessCli();
-                    window.setVisible(true);
                     
                     window.createMenu();
                 } catch (Exception e) {
@@ -53,50 +57,58 @@ public class ChessCli extends JFrame implements ActionListener {
      * Create the frame.
      */
     private ChessCli() {
-        initialize();
+        this.initialize();
     }
 
     /**
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        setResizable(false);
-        setSize(WND_WIDTH, WND_HEIGHT);
-        setTitle(WND_TITLE);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(WND_WIDTH, WND_HEIGHT);
+        this.setResizable(false);
+        this.setTitle(WND_TITLE);
+        
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension dim = tk.getScreenSize();
+        
+        int xPos = (dim.width / 2) - (this.getWidth() / 2);
+        int yPos = (dim.height / 2) - (this.getHeight() / 2);
+        
+        this.setLocation(xPos, yPos);
     }
 
     public void actionPerformed(ActionEvent e) {
         String actnString = e.getActionCommand();
 
         if (actnString.equals("New Game")) {
-            createBoardView();
+            this.createBoardView();
         } else if (actnString.equals("Settings")) {
-            createSettingsMenu();
+            this.createSettingsMenu();
         } else if (actnString.equals("Exit")) {
-            exit();
+            this.exit();
         }
     }
 
     private void createMenu() {
         contentPane = new MainMenu();
 
-        setContentPane(contentPane);
-        setVisible(true);
+        this.setContentPane(contentPane);
+        this.setVisible(true);
     }
 
     private void createBoardView() {
         contentPane = new BoardView("Bob", "Alice");
 
-        setContentPane(contentPane);
-        setVisible(true);
+        this.setContentPane(contentPane);
+        this.setVisible(true);
     }
 
     private void createSettingsMenu() {
         contentPane = new SettingsMenu();
 
-        setContentPane(contentPane);
-        setVisible(true);
+        this.setContentPane(contentPane);
+        this.setVisible(true);
     }
 
     private void exit() {

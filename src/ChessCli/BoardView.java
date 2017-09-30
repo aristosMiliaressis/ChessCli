@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import ChessCore.Board;
 import ChessCore.Piece;
@@ -30,46 +31,62 @@ public class BoardView extends JPanel implements MouseListener {
     private static Piece selectedPiece = null;
     private static Match match = new Match();
     
-    private JPanel movePanel = new JPanel(new BorderLayout());
-    private static DefaultListModel<String> model = new DefaultListModel<>();
-    private JList<String> moveList = new JList<>(model);
+    private JPanel movePanel;
+    private JScrollPane scrollPane;
+    private static DefaultListModel<String> model;
+    private JList<String> moveList;
     private JLabel lblWhite = new JLabel();
     private JLabel lblBlack = new JLabel();
     private final JButton button = new JButton("Export Match");
 
     protected BoardView(String white, String black) {
-        setLayout(null);
+        this.setLayout(null);
         this.addMouseListener(this);
         
+        // Create panel and set its bounds
+        movePanel = new JPanel(new BorderLayout());
         movePanel.setBounds(540, 30, 188, 520);
-        movePanel.add(moveList);
-        add(movePanel);
+        
+        // Create new model and list for moves
+        model = new DefaultListModel<>();
+        moveList = new JList<>(model);
+        
+        // Create scroll pane and add list to it
+        scrollPane = new JScrollPane(moveList, 
+                                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+                                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        // Add scroll pane to panel
+        movePanel.add(scrollPane);
+        
+        // Add move panel to BoardView panel
+        this.add(movePanel);
         
         JCheckBox chckbxRotateBoard = new JCheckBox("Rotate Board");
         chckbxRotateBoard.setBounds(22, 563, 129, 23);
-        add(chckbxRotateBoard);
+        this.add(chckbxRotateBoard);
         
         JButton btnUndoMove = new JButton("Undo Move");
         btnUndoMove.setBounds(611, 562, 117, 25);
-        add(btnUndoMove);
+        this.add(btnUndoMove);
         
         lblWhite.setText("White: " + white);
         lblWhite.setBounds(12, 535, 139, 15);
-        add(lblWhite);
+        this.add(lblWhite);
         
         lblBlack.setText("Black: " + black);
         lblBlack.setBounds(392, 535, 130, 15);
-        add(lblBlack);
+        this.add(lblBlack);
         button.setBounds(237, 562, 139, 25);
         
-        add(button);
+        this.add(button);
         Board.initBoard(epdInitArray);
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        drawBoard(g);
+        this.drawBoard(g);
     }
     
     protected static Piece getSelectedPiece() {
@@ -203,7 +220,8 @@ public class BoardView extends JPanel implements MouseListener {
         if (Match.getCurrentPlayer() == Piece.Color.WHITE) {
             notation = (match.getMoveCount() / 2 + 1) + ". " + notation;
         } else {
-            notation = model.remove(model.size()-1) + "    " + notation;
+            String prevMove = String.format("%-20s", model.remove(model.size() - 1));
+            notation = prevMove + notation;
         }
         model.addElement(notation);
     }
@@ -212,4 +230,3 @@ public class BoardView extends JPanel implements MouseListener {
         return null; // TODO
     }
 }
-

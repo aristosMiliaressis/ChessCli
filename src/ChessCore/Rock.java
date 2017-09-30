@@ -1,7 +1,6 @@
 package ChessCore;
 
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class Rock extends Piece {
@@ -14,46 +13,35 @@ public class Rock extends Piece {
 	}
 
 	public HashMap<Integer, Move> calculateLegalMoves() {
-        System.out.println(getColor().toString() + this + " at " + getCoords().Notation() + " called calculateLegalMoves()");
 		HashMap<Integer, Move> legalMoves = new HashMap<Integer, Move>();
-
+		Board.Coords coords = this.getCoords();
+        Color color = this.getColor();
+		Move.Rules rules;
+		Move.Descriptor descriptor;
+		
 		Move moveRank = new Move();
-		Move.Rules rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules = new Move.Rules();
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		moveRank.setRules(rules);
 
-		Move.Descriptor descriptor = moveRank.new Descriptor();
-		descriptor.setSrcCoords(getCoords());
-		descriptor.playingColor(getColor());
-		descriptor.setDestCoords(new Board.Coords(getCoords().file, 64));
+		descriptor = moveRank.new Descriptor();
+		descriptor.setSrcCoords(coords);
+		descriptor.playingColor(color);
+		descriptor.setDestCoords(new Board.Coords(coords.file, 64));
 		moveRank.setDescriptor(descriptor);
-		for (Map.Entry<Integer, Move> entry : moveRank.expandUndefinedMoves().entrySet()) {
-            Move move = entry.getValue();
-            rules = move.getRules();
-            descriptor = move.getDescriptor();
-            if (rules.check(move)) {
-                legalMoves.put(descriptor.getDestCoords().keyable(), move);
-            }
-        }
+		legalMoves.putAll(moveRank.expandUndefinedMoves());
 
 		Move moveFile = new Move();
 		rules = new Move.Rules();
-		rules.destState = Move.Rules.SquareState.EITHER;
+		rules.destCondition = Move.Rules.SquareState.EITHER;
 		moveFile.setRules(rules);
 
 		descriptor = moveFile.new Descriptor();
-		descriptor.setSrcCoords(getCoords());
-		descriptor.playingColor(getColor());
-		descriptor.setDestCoords(new Board.Coords('A', getCoords().rank));
+		descriptor.setSrcCoords(coords);
+		descriptor.playingColor(color);
+		descriptor.setDestCoords(new Board.Coords('A', coords.rank));
 		moveFile.setDescriptor(descriptor);
-		for (Map.Entry<Integer, Move> entry : moveFile.expandUndefinedMoves().entrySet()) {
-            Move move = entry.getValue();
-            rules = move.getRules();
-            descriptor = move.getDescriptor();
-            if (rules.check(move)) {
-                legalMoves.put(descriptor.getDestCoords().keyable(), move);
-            }
-        }
+		legalMoves.putAll(moveRank.expandUndefinedMoves());
 
 		return legalMoves;
 	}

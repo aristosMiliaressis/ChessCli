@@ -1,6 +1,8 @@
 package ChessCore;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 public final class Board
 {
@@ -62,304 +64,6 @@ public final class Board
 		public static String Notation(Coords coord) {
 			return Coords.Notation(coord.file, coord.rank);
 		}
-		
-		@SuppressWarnings("incomplete-switch")
-        public boolean isPinned(Piece.Color color) {
-	        System.out.println("Board.Coords[" + Coords.Notation(this) + "].isPinned(" + color.toString() + ")");
-	        Piece piece;
-	        
-	        Coords tmpCoords = new Coords(this);
-	        for (tmpCoords.file += 1; tmpCoords.file <= 'h'; tmpCoords.file++) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case ROCK:
-	                    return true;
-	                case KING:
-	                    tmpCoords.file--;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.file -= 1; tmpCoords.file >= 'a'; tmpCoords.file--) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case ROCK:
-	                    return true;
-	                case KING:
-	                    tmpCoords.file++;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank += 1; tmpCoords.rank <= 8; tmpCoords.rank++) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case ROCK:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank--;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank -= 1; tmpCoords.rank >= 1; tmpCoords.rank--) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case ROCK:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank++;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank += 1, tmpCoords.file += 1;
-	             tmpCoords.rank <= 8 && tmpCoords.file <= 'h';
-	             tmpCoords.rank++,  tmpCoords.file++) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case BISHOP:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank--;
-	                    tmpCoords.file--;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                    break;
-	                case PAWN:
-	                    tmpCoords.rank--;
-	                    tmpCoords.file--;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank += 1, tmpCoords.file -= 1;
-	             tmpCoords.rank <= 8 && tmpCoords.file >= 'a';
-	             tmpCoords.rank++,  tmpCoords.file--) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case BISHOP:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank--;
-	                    tmpCoords.file++;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                    break;
-	                case PAWN:
-	                    tmpCoords.rank--;
-	                    tmpCoords.file++;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank -= 1, tmpCoords.file += 1;
-	             tmpCoords.rank >= 1 && tmpCoords.file <= 'h';
-	             tmpCoords.rank--,  tmpCoords.file++) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case BISHOP:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank++;
-	                    tmpCoords.file++;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-
-	        tmpCoords = new Coords(this);
-	        for (tmpCoords.rank -= 1, tmpCoords.file -= 1;
-	             tmpCoords.rank >= 1 && tmpCoords.file >= 'a';
-	             tmpCoords.rank--,  tmpCoords.file--) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece == null) {
-	                continue;
-	            }
-	            
-	            if (piece.getColor() != color) {
-	                switch(piece.getType()) {
-	                case QUEEN:
-	                    return true;
-	                case BISHOP:
-	                    return true;
-	                case KING:
-	                    tmpCoords.rank++;
-	                    tmpCoords.file--;
-	                    if (this.equals(tmpCoords)) {
-	                        return true;
-	                    }
-	                }
-	            }
-	            break;
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank += 2;
-	        tmpCoords.file++;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank += 2;
-	        tmpCoords.file--;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank -= 2;
-	        tmpCoords.file++;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank -= 2;
-	        tmpCoords.file--;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank++;
-	        tmpCoords.file += 2;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank--;
-	        tmpCoords.file += 2;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank++;
-	        tmpCoords.file -= 2;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-	        
-	        tmpCoords = new Coords(this);
-	        tmpCoords.rank--;
-	        tmpCoords.file -= 2;
-	        if (tmpCoords.valid()) {
-	            piece = getPieceAtSquare(tmpCoords);
-	            if (piece != null && piece.getType() == Piece.Type.KNIGHT && piece.getColor() != color) {
-	                return true;
-	            }
-	        }
-
-	        return false;
-	    }
 	}
 
 	public static class Square {
@@ -421,6 +125,27 @@ public final class Board
 	    		}
 	    	}
 	    }
+		
+		public boolean isPinned(Piece.Color color) {
+            Coords coord = new Coords('a', 1);
+            for (coord.rank = 1; coord.rank <= 8; coord.rank++) {
+                for (coord.file = 'a'; coord.file <= 'h'; coord.file++) {
+                    Piece piece = getPieceAtSquare(coord);
+                    if (piece != null && piece.getColor() != color) {
+                        HashMap<Integer, Move> moves = piece.calculateLegalMoves();
+                        Iterator<Entry<Integer, Move>> it = moves.entrySet().iterator();
+                        while (it.hasNext()) {
+                            Entry<Integer, Move> entry = (Entry<Integer, Move>) it.next();
+                            Coords destCoord = new Coords(entry.getKey());
+                            if (this.coords.equals(destCoord))
+                                return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
 	}
 
 	private static HashMap<Integer, Square> board = new HashMap<Integer, Square>();
@@ -496,9 +221,7 @@ public final class Board
 
 		movePiece(srcCoords, destCoords);
 		if (descriptor.en_passant()) {
-		    System.out.println("Dest: " + destCoords.Notation());
 			destCoords.rank += (descriptor.playingColor() == Piece.Color.WHITE) ? -1 : 1;
-			System.out.println("Dest: " + destCoords.Notation());
 			getSquare(destCoords).setPiece(null);
 		} else if (descriptor.castling()) {
 			Coords rockSrc = null, rockDest = null;
@@ -578,7 +301,7 @@ public final class Board
 				break;
 			}
 		}
-
+		
 		if (descriptor.promotes()) {
 		    System.out.println("Move Promotes");
 			getSquare(srcCoords).setPiece(new Pawn(descriptor.playingColor(), srcCoords));
@@ -593,7 +316,7 @@ public final class Board
 		srcSquare.setPiece(null);
 	}
 	
-	public static Coords findKing(Piece.Color color) {
+	public static Square findKing(Piece.Color color) {
 		Coords coord = new Coords('a', 1);
 		
 		for (; coord.file <= 'h'; coord.file++) {
@@ -601,7 +324,8 @@ public final class Board
 				Piece piece = getPieceAtSquare(coord);
 				
 				if (piece != null && piece.getType() == Piece.Type.KING && piece.getColor() == color) {
-					return coord;
+				    System.out.println("\t[+] " + color.toString() + " King found at " + coord.Notation());
+					return getSquare(coord);
 				}
 			}
 		}
