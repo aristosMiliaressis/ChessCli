@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class SettingsMenu extends JPanel {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6438395677349244859L;
 
     /**
      * Create the panel.

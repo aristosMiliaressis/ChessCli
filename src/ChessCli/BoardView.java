@@ -22,7 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class BoardView extends JPanel implements MouseListener {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -153552774794726734L;
     
     private static final int SQUARE_SIZE = 60;
     private static final int BORDER_SIZE = 30;

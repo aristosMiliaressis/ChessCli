@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JPanel implements ActionListener {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -381125922966707475L;
 
     /**
      * Create the panel.

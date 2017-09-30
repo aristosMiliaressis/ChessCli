@@ -29,7 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class ChessCli extends JFrame implements ActionListener {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3898297581454001400L;
     
     private static JPanel contentPane;
 
