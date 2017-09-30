@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 public class MainMenu extends JPanel implements ActionListener {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Create the panel.
@@ -53,7 +54,6 @@ public class MainMenu extends JPanel implements ActionListener {
         add(btnExit);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         JComponent source = (JComponent) e.getSource();
 

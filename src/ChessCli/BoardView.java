@@ -22,6 +22,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class BoardView extends JPanel implements MouseListener {
+    private static final long serialVersionUID = 1L;
+    
     private static final int SQUARE_SIZE = 60;
     private static final int BORDER_SIZE = 30;
     private static final int MARGIN_SIZE = 6;
@@ -48,8 +50,8 @@ public class BoardView extends JPanel implements MouseListener {
         movePanel.setBounds(540, 30, 188, 520);
         
         // Create new model and list for moves
-        model = new DefaultListModel<>();
-        moveList = new JList<>(model);
+        model = new DefaultListModel<String>();
+        moveList = new JList<String>(model);
         
         // Create scroll pane and add list to it
         scrollPane = new JScrollPane(moveList, 
