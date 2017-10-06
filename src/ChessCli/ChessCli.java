@@ -1,17 +1,17 @@
 package ChessCli;
 /*
  * Bugs:
- *   -
+ *   Fix isKingPinned
  * 
  * Refactor:
  *   -
  *      
  * To Implement:
- *   undoMove
+ *   display option for promotion type (use a pop up dialog)
+ *   matchConcluded (use a pop up dialog)
  *   
- *   display option for promotion type
- *   matchConcluded
  *   MatchController option to Rotate Board
+ *   undoMove (castling rights complication)
  *   Timed Matches
  *   load matches from EPD files
  *   

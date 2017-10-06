@@ -19,32 +19,32 @@ public abstract class Piece {
 	public enum Type {
 		PAWN {
 		    @Override public String toString() {
-                return "Pawn";
+                return "P";
             }
         },
 		ROCK {
             @Override public String toString() {
-                return "Rock";
+                return "R";
             }
         },
 		KNIGHT {
             @Override public String toString() {
-                return "Knight";
+                return "N";
             }
         },
 		BISHOP {
             @Override public String toString() {
-                return "Bishop";
+                return "B";
             }
         },
 		QUEEN {
             @Override public String toString() {
-                return "Queen";
+                return "Q";
             }
         },
 		KING {
             @Override public String toString() {
-                return "King";
+                return "K";
             }
         }
 	};

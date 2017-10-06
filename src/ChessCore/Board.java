@@ -138,7 +138,12 @@ public final class Board
                             Entry<Integer, Move> entry = (Entry<Integer, Move>) it.next();
                             Coords destCoord = new Coords(entry.getKey());
                             if (this.coords.equals(destCoord))
+                            {
+                                System.out.println("Piece: " + piece);
+                                System.out.println("Move: " + entry.getValue());
+                                System.out.println("Dest: " + destCoord.Notation());
                                 return true;
+                            }
                         }
                     }
                 }
