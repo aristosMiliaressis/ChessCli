@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import ChessCore.Move.Descriptor;
+
 public final class Board
 {
 	public static class Coords
@@ -137,12 +139,14 @@ public final class Board
                         while (it.hasNext()) {
                             Entry<Integer, Move> entry = (Entry<Integer, Move>) it.next();
                             Coords destCoord = new Coords(entry.getKey());
-                            if (this.coords.equals(destCoord))
-                            {
-                                System.out.println("Piece: " + piece);
-                                System.out.println("Move: " + entry.getValue());
-                                System.out.println("Dest: " + destCoord.Notation());
-                                return true;
+                            Move move = entry.getValue();
+                            Move.Rules rules = move.getRules();
+                            
+                            if (rules.check(move)) {
+                                if (this.coords.equals(destCoord)) {
+                                    return true;
+                                }
+                                System.out.println("\t-Move: " + move.getNotation() + " NOT Pinning King");
                             }
                         }
                     }
@@ -321,6 +325,17 @@ public final class Board
 		srcSquare.setPiece(null);
 	}
 	
+	public static boolean isKingPinned(Descriptor descriptor) {
+        Board.makeMove(descriptor.playingColor(), descriptor);
+        
+        Board.Square kingSquare = Board.findKing(descriptor.playingColor());
+        boolean isKingPinned = kingSquare.isPinned(descriptor.playingColor());
+        
+        Board.unmakeMove(descriptor);
+        
+        return isKingPinned;
+    }
+	
 	public static Square findKing(Piece.Color color) {
 		Coords coord = new Coords('a', 1);
 		
@@ -329,7 +344,6 @@ public final class Board
 				Piece piece = getPieceAtSquare(coord);
 				
 				if (piece != null && piece.getType() == Piece.Type.KING && piece.getColor() == color) {
-				    System.out.println("\t[+] " + color.toString() + " King found at " + coord.Notation());
 					return getSquare(coord);
 				}
 			}

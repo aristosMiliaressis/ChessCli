@@ -1,7 +1,7 @@
 package ChessCli;
 /*
  * Bugs:
- *   Fix isKingPinned
+ *   -
  * 
  * Refactor:
  *   -

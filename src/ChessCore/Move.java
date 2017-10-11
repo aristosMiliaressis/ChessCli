@@ -28,8 +28,7 @@ public final class Move {
 
 		public boolean check(Move move) {
 			Descriptor descriptor = move.getDescriptor();
-			System.out.println("Checking Move: " + move.getNotation());
-			
+		
 			if (en_passant) {
 			    return checkEnPassant(descriptor);
 			} else if (castling) {
@@ -45,11 +44,10 @@ public final class Move {
 			}
 			
 			move.setDescriptor(descriptor);
-			return !isKingPinned(descriptor);
+			return true;
 		}
 		
 		private boolean checkEnPassant(Descriptor descriptor) {
-		    System.out.println("\t[*] Move is En Passant");
 		    Board.Coords srcCoords = descriptor.getSrcCoords();
 		    Board.Coords destCoords = descriptor.getDestCoords();
             
@@ -64,8 +62,7 @@ public final class Move {
                 
                 Piece piece = Board.getPieceAtSquare(prevDestCoords);
                 if (piece.getType() == Piece.Type.PAWN) {
-                    System.out.println("\t[+] Passed En Passant initial test");
-                    return !isKingPinned(descriptor);
+                    return true;
                 }
             }
 
@@ -73,7 +70,6 @@ public final class Move {
         }
 		
 		private boolean checkCastling(Descriptor descriptor) { // TODO
-		    System.out.println("\t[*] Move is Castling");
 		    Board.Coords srcCoords = descriptor.getSrcCoords();
             Board.Coords destCoords = descriptor.getDestCoords();
             Board.Coords rockCoords = null;
@@ -94,13 +90,11 @@ public final class Move {
         }
 		
 		private boolean isPathPinned(Descriptor descriptor) {
-		    System.out.println("\t[*] Checking if Path is Pinned");
             Board.Coords src = descriptor.getSrcCoords();
             Board.Coords dest = descriptor.getDestCoords();
             
             do {
                 if (Board.getSquare(src).isPinned(descriptor.playingColor())) {
-                    System.out.println("\t[-] Path is Pinned");
                     return true;
                 }
                 
@@ -122,7 +116,6 @@ public final class Move {
         }
 		
 		private boolean arePiecesInPath(Board.Coords src, Board.Coords dest) {
-            System.out.println("\t[*] Move is NOT Knights");
             do {
                 if (src.rank > dest.rank) {
                     src.rank--;
@@ -146,12 +139,10 @@ public final class Move {
             }
             while (!dest.equals(src));
             
-            System.out.println("\t[+] No Pieces in Path");
             return false;
         }
 		
 		private boolean checkDestSquareCondition(Descriptor descriptor) {
-		    System.out.println("\t[*] Checking Destination Square Condition");
 		    Board.Coords destCoords  = descriptor.getDestCoords();
 		    
 		    if (descriptor.promotes()) {
@@ -162,24 +153,20 @@ public final class Move {
 		        }
 		    }
 		    
+		    Piece srcPiece = Board.getPieceAtSquare(descriptor.getSrcCoords());
 		    Piece destPiece = Board.getPieceAtSquare(destCoords);
             if (destPiece == null) {
-                System.out.println("\t[*] No Piece at Dest " + destCoords.Notation());
                 if (destCondition == SquareState.OPPOSING_PIECE) {
                     return false;
                 }
 
                 descriptor.captures(null);
             } else {
-                System.out.println("\t[*] Piece Found at Dest");
-                if (destPiece.getColor() == Match.getCurrentPlayer()) {
-                    System.out.println("\t[-] Ally Piece at Dest");
+                if (destPiece.getColor() == srcPiece.getColor()) {
                     return false;
                 }
 
-                System.out.println("\t[*] Opposing Piece at Dest");
                 if (destCondition == SquareState.NO_PIECE) {
-                    System.out.println("\t[-] Dest Square Test Failed");
                     return false;
                 }
 
@@ -205,21 +192,7 @@ public final class Move {
                 }
             }
             
-            System.out.println("\t[+] Dest Square Test Passed");
             return true;
-		}
-		
-		private boolean isKingPinned(Descriptor descriptor) {
-		    System.out.println("\t[*] Checking if King is Pinned");
-            Board.makeMove(descriptor.playingColor(), descriptor);
-            
-            Board.Square kingSquare = Board.findKing(descriptor.playingColor());
-            boolean isKingPinned = kingSquare.isPinned(descriptor.playingColor());
-            
-            Board.unmakeMove(descriptor);
-            
-            System.out.println("\t[+] Is King Pinned: " + isKingPinned);
-            return isKingPinned;
 		}
 
 		public boolean jumps;

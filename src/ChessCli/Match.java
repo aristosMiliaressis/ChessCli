@@ -136,18 +136,28 @@ public class Match {
 	    	Move.Descriptor descriptor = move.getDescriptor();
 	    	Move.Rules rules = move.getRules();
 	    	
+	    	System.out.println("\n[*] Checking Move: " + move.getNotation());
+	    	
 	    	// Check for castling state (has king or rock moved?)
             if (descriptor.castling() && !state.checkCastlingRights(descriptor)) {
-                System.out.println("\t[-] No Castling Rigths");
+                System.out.println("[-] No Castling Rigths");
                 removedMoves.add(entry.getKey());
                 continue;
             }
             
 	    	if (!rules.check(move)) {
-	    	    System.out.println("\t[-] Failed rule check");
+	    	    System.out.println("[-] Failed NOT legal");
 	    	    removedMoves.add(entry.getKey());
                 continue;
 	    	}
+	    	
+	    	if (Board.isKingPinned(descriptor))
+	    	{
+	    	    System.out.println("[-] King is Pinned");
+                removedMoves.add(entry.getKey());
+                continue;
+	    	}
+	    	System.out.println("[+] Move is Legal");
 	    	
 	    	Board.Square destSquare = Board.getSquare(new Board.Coords(entry.getKey()));
 			if (descriptor.captures()) {

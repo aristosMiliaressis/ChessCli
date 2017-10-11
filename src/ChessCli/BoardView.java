@@ -222,7 +222,7 @@ public class BoardView extends JPanel implements MouseListener {
         if (Match.getCurrentPlayer() == Piece.Color.WHITE) {
             notation = (match.getMoveCount() / 2 + 1) + ". " + notation;
         } else {
-            String prevMove = String.format("%-20s", model.remove(model.size() - 1));
+            String prevMove = String.format("%-18s", model.remove(model.size() - 1));
             notation = prevMove + notation;
         }
         model.addElement(notation);
