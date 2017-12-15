@@ -235,7 +235,7 @@ public final class Move {
         }
 		
 		public void printMove() {
-		    System.out.println("----- [ Printing Move ] -----");
+		    System.out.println("----- [ Move " + this.Notation() + " ] -----");
 		    System.out.println("Src Square: " + getSrcCoords().Notation() + ", Dest Square: " + getDestCoords().Notation());
 		    if (captures())
 		        System.out.println("Captures: " + captureType().toString());
